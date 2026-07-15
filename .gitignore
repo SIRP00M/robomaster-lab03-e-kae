@@ -1,0 +1,84 @@
+# =========================
+# Python virtual environment
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# Python cache / compiled files
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# =========================
+# Package / build files
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# =========================
+# IDE / editor
+# =========================
+.vscode/
+.idea/
+*.code-workspace
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Environment / secrets
+# =========================
+.env
+.env.*
+*.key
+*.pem
+
+# =========================
+# RoboMaster logs and runtime files
+# =========================
+robomaster_log_*/
+*.log
+
+# =========================
+# CSV and generated datasets
+# ยังไม่ push ข้อมูลทดลอง
+# =========================
+*.csv
+data/raw/**
+data/processed/**
+
+# เก็บโฟลเดอร์เปล่าไว้ใน Git ได้
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# =========================
+# Generated plots
+# =========================
+analysis/plots/**
+!analysis/plots/.gitkeep
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
