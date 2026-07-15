@@ -1,0 +1,13 @@
+robomaster
+PyYAML
+pandas
+matplotlib
+opencv-python
+
+pywinpty==2.0.12; platform_system=="Windows" and python_version=="3.8"
+terminado<0.18
+ipykernel<7
+ipython<9
+notebook==6.5.7
+jupyter-client<9
+jupyter-core<6
