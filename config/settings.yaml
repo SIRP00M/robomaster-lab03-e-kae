@@ -1,0 +1,20 @@
+# settings.yaml
+# เก็บพารามิเตอร์การตั้งค่าหุ่นยนต์ RoboMaster ทั้งหมดไว้ที่นี่
+# แก้ค่าที่นี่แทนการแก้โค้ดโดยตรง
+
+robot:
+  conn_type: ap         # วิธีเชื่อมต่อหุ่นยนต์ (ap / sta)
+  local_ip: null       # ระบุ IP เครื่องคอมเอง ถ้ามี network card หลายตัว (เช่น "192.168.2.20") ปล่อย null ถ้าไม่ต้องระบุ
+
+sensor:
+  freq: 20                # ความถี่ subscribe ข้อมูล sensor (Hz)
+
+movement:
+  distance_m: 0.60          # ระยะเดินหน้าต่อด้าน (2 tiles = 60 cm)
+  move_speed: 0.8            # ความเร็วเดินหน้า (m/s)
+  turn_angle: 90               # มุมเลี้ยวต่อครั้ง (องศา)
+  turn_speed: 90                 # ความเร็วเลี้ยว (องศา/วินาที)
+  pause_s: 1.0                    # เวลาหยุดพักระหว่างการเคลื่อนที่แต่ละสเต็ป (วินาที)
+
+logging:
+  timezone_offset_hours: 7   # UTC+7 (เวลาไทย)
