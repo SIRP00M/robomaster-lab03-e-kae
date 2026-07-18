@@ -1,9 +1,3 @@
-"""
-main.py
-สคริปต์รันหุ่นยนต์หลัก (Entry Point)
-ดึงโค้ดทุกส่วน (config, chassis, logger) จากโฟลเดอร์ src/ มารวมกันที่นี่
-"""
-
 import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -16,6 +10,7 @@ from src.chassis import ChassisController
 from src.logger import SensorLogger
 
 def main():
+    # Load all settings from the YAML file
     config = load_config("config/settings.yaml")
 
     tz = timezone(timedelta(hours=config["logging"]["timezone_offset_hours"]))
@@ -29,19 +24,19 @@ def main():
     )
 
     ep_robot = robot.Robot()
-    chassis = None  # กันไว้ก่อน เผื่อ initialize() ล้มเหลวก่อนสร้าง chassis จริง
+    chassis = None  # Set this first in case the robot cannot connect
 
+    # Get the connection mode, such as "ap", from settings.yaml
     conn_type = config["robot"]["conn_type"]
     local_ip = config["robot"].get("local_ip")
 
     if local_ip:
-        # ระบุ local IP เอง กรณีเครื่องมี network card หลายตัว
-        # (WiFi + Ethernet + VPN ฯลฯ) แล้ว SDK เลือก adapter ผิดตัวอัตโนมัติ
+        # Use the selected IP when the computer has many connections
         robomaster.config.LOCAL_IP_STR = local_ip
         print(f"[INFO] using local_ip = {local_ip}")
 
     try:
-        ep_robot.initialize(conn_type="conn_type")
+        ep_robot.initialize(conn_type=conn_type)
 
         chassis = ChassisController(
             ep_robot=ep_robot,
@@ -49,8 +44,10 @@ def main():
             freq=config["sensor"]["freq"],
         )
 
+        # Start collecting sensor data before the robot moves
         chassis.subscribe_sensors()
 
+        # Move the robot in a square using the configured values
         chassis.square_path(
             distance_m=config["movement"]["distance_m"],
             move_speed=config["movement"]["move_speed"],
@@ -59,19 +56,18 @@ def main():
             pause_s=config["movement"]["pause_s"],
         )
 
-        time.sleep(1.0)  # เก็บข้อมูลหลังหยุด
+        time.sleep(1.0)  # Wait a little longer to collect data
 
     except Exception as e:
-        # กันไม่ให้ error ระหว่างทาง (wifi หลุด, timeout ฯลฯ) ทำให้เสียข้อมูลที่เก็บมาได้แล้วทั้งหมด
-        print(f"[ERROR] เกิดข้อผิดพลาดระหว่างรัน: {e!r}")
+        # Show a message if something goes wrong
+        print(f"[ERROR] An error occurred while running: {e!r}")
 
     finally:
         if chassis is not None:
             chassis.unsubscribe_sensors()
         ep_robot.close()
 
-        # ย้าย save/plot มาไว้ใน finally เพื่อให้ save ข้อมูลที่เก็บได้เสมอ
-        # ไม่ว่าข้างบนจะรันจบปกติหรือเกิด error ระหว่างทางก็ตาม
+        # Save the data and make the graphs before the program ends
         print("[INFO] saving csv...")
         csv_paths = sensor_logger.save_all()
 
