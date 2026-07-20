@@ -1,7 +1,7 @@
 """
 chassis.py
-คลาสควบคุมล้อ Mecanum (เดินหน้า, ถอยหลัง, สไลด์ข้าง)
-รับผิดชอบ: subscribe/unsubscribe sensor และคำสั่งเคลื่อนที่พื้นฐานของ chassis
+Mecanum wheel control class (forward, backward, and lateral movement)
+Responsibilities: sensor subscription/unsubscription and basic chassis movement commands
 """
 
 import time
@@ -9,7 +9,7 @@ import time
 
 class ChassisController:
     """
-    Wrapper รอบ ep_robot.chassis ของ RoboMaster SDK
+    Wrapper around ep_robot.chassis from the RoboMaster SDK
     """
 
     def __init__(self, ep_robot, logger, freq: int = 20):
@@ -24,7 +24,7 @@ class ChassisController:
         self.chassis.sub_position(cs=0, freq=self.freq, callback=self.logger.cb_position)
         self.chassis.sub_imu(freq=self.freq, callback=self.logger.cb_imu)
         self.chassis.sub_esc(freq=self.freq, callback=self.logger.cb_esc)
-        time.sleep(1.0)  # ให้ sensor เริ่มส่งข้อมูลก่อน
+        time.sleep(1.0)  # Allow sensors to begin transmitting data
 
     def unsubscribe_sensors(self):
         print("[INFO] unsubscribing sensors...")
@@ -44,11 +44,11 @@ class ChassisController:
         self.chassis.move(x=-distance_m, y=0, z=0, xy_speed=speed).wait_for_completed()
 
     def slide(self, distance_m: float, speed: float):
-        """สไลด์ข้าง (แกน y) — บวก = ขวา, ลบ = ซ้าย"""
+        """Move laterally along the y-axis — positive = right, negative = left"""
         self.chassis.move(x=0, y=distance_m, z=0, xy_speed=speed).wait_for_completed()
 
     def turn(self, angle_deg: float, speed: float):
-        """หมุน chassis — angle_deg บวก = หมุนซ้าย, ลบ = หมุนขวา (ตาม RoboMaster SDK)"""
+        """Rotate the chassis — positive angle = left, negative angle = right, according to the RoboMaster SDK"""
         self.chassis.move(x=0, y=0, z=angle_deg, z_speed=speed).wait_for_completed()
 
     def square_path(self, distance_m, move_speed, turn_angle, turn_speed, pause_s=1.0, sides=4):

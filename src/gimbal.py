@@ -1,20 +1,20 @@
 """
 gimbal.py
-คลาสควบคุมป้อม/มุมกล้องกิมบอล (Gimbal)
+Class for controlling the gimbal-mounted camera angle
 
-หมายเหตุ: สคริปต์ต้นฉบับที่ให้มายังไม่มีการใช้งานกิมบอล
-คลาสนี้เป็นโครงพื้นฐาน (skeleton) ให้ทีมต่อยอดฟังก์ชันเพิ่มเติมได้เอง
+Note: The original script does not currently use the gimbal.
+This class provides a basic skeleton that the team can extend with additional functionality.
 """
 
 
 class GimbalController:
-    """Wrapper รอบ ep_robot.gimbal ของ RoboMaster SDK"""
+    """Wrapper around ep_robot.gimbal from the RoboMaster SDK"""
 
     def __init__(self, ep_robot):
         self.gimbal = ep_robot.gimbal
 
     def recenter(self):
-        """หมุนกิมบอลกลับตำแหน่งกึ่งกลาง"""
+        """Return the gimbal to its center position"""
         self.gimbal.recenter().wait_for_completed()
 
     def move(self, pitch: float = 0, yaw: float = 0,

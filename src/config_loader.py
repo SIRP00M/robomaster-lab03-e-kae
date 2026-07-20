@@ -1,7 +1,7 @@
 """
 config_loader.py
-ฟังก์ชันสำหรับอ่านไฟล์ config/settings.yaml และแปลงเป็น Dictionary
-เพื่อให้ทุกโมดูล (chassis, gimbal, vision, logger, main) เรียกใช้พารามิเตอร์ชุดเดียวกัน
+Functions for reading the config/settings.yaml file and converting it into a dictionary,
+allowing all modules (chassis, gimbal, vision, logger, and main) to use the same parameter set.
 """
 
 from pathlib import Path
@@ -10,23 +10,24 @@ import yaml
 
 def load_config(path="config/settings.yaml") -> dict:
     """
-    อ่านไฟล์ .yaml แล้วคืนค่าเป็น dict
+    Read a .yaml file and return its contents as a dictionary.
 
     Parameters
     ----------
     path : str | Path
-        ตำแหน่งไฟล์ settings.yaml (ค่า default = config/settings.yaml
-        โดยอ้างอิงจาก working directory ที่รัน main.py)
+        Path to the settings.yaml file (default = config/settings.yaml,
+        relative to the working directory where main.py is executed).
 
     Returns
     -------
     dict
-        ค่า config ทั้งหมด เช่น config["movement"]["distance_m"]
+        All configuration values, for example:
+        config["movement"]["distance_m"]
     """
     path = Path(path)
 
     if not path.exists():
-        raise FileNotFoundError(f"ไม่พบไฟล์ config: {path.resolve()}")
+        raise FileNotFoundError(f"No config: {path.resolve()}")
 
     with path.open("r", encoding="utf-8") as f:
         return yaml.safe_load(f)

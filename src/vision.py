@@ -1,16 +1,16 @@
 """
 vision.py
-คลาสสตรีมภาพและประมวลผลกล้อง (OpenCV)
+Class for camera streaming and image processing using OpenCV
 
-หมายเหตุ: สคริปต์ต้นฉบับที่ให้มายังไม่มีการใช้งานกล้อง
-คลาสนี้เป็นโครงพื้นฐาน (skeleton) ให้ทีมต่อยอดฟังก์ชันเพิ่มเติมได้เอง
+Note: The original script does not currently use the camera.
+This class provides a basic skeleton that the team can extend with additional functionality.
 """
 
 import cv2
 
 
 class VisionStream:
-    """Wrapper รอบ ep_robot.camera ของ RoboMaster SDK สำหรับสตรีมและประมวลผลภาพ"""
+    """Wrapper around ep_robot.camera from the RoboMaster SDK for image streaming and processing"""
 
     def __init__(self, ep_robot):
         self.camera = ep_robot.camera
@@ -22,11 +22,11 @@ class VisionStream:
         self.camera.stop_video_stream()
 
     def read_frame(self, timeout: float = 3.0):
-        """อ่าน frame ปัจจุบันเป็นภาพ OpenCV (numpy array, BGR)"""
+        """Read the current frame as an OpenCV image (NumPy array in BGR format)"""
         return self.camera.read_cv2_image(timeout=timeout)
 
     def show_frame(self, window_name: str = "RoboMaster", timeout: float = 3.0):
-        """แสดงผล frame ปัจจุบันในหน้าต่าง OpenCV (สำหรับ debug)"""
+        """Display the current frame in an OpenCV window for debugging"""
         frame = self.read_frame(timeout=timeout)
         cv2.imshow(window_name, frame)
         cv2.waitKey(1)

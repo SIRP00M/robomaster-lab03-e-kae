@@ -1,8 +1,10 @@
 """
 logger.py
-คลาสสำหรับเก็บข้อมูล sensor (attitude, position, imu, esc) จาก callback ของ RoboMaster SDK
-แล้ว save เป็น CSV + plot กราฟ
-แยก logic มาจาก test.py เดิม (ที่ใช้ global dict/function) ให้เป็นคลาสที่ chassis.py เรียกใช้ได้
+Class for collecting sensor data (attitude, position, IMU, and ESC)
+from RoboMaster SDK callbacks, then saving the data as CSV files and plotting graphs.
+
+The logic was separated from the original test.py script, which used global
+dictionaries and functions, and converted into a class that can be used by chassis.py.
 """
 
 import csv
@@ -17,8 +19,8 @@ import matplotlib.pyplot as plt
 
 class SensorLogger:
     """
-    เก็บข้อมูลจาก callback ของ chassis (attitude, position, imu, esc)
-    แล้ว save เป็น CSV และ plot กราฟให้อัตโนมัติ
+    Collect data from chassis callbacks (attitude, position, IMU, and ESC),
+    then automatically save the data as CSV files and plot graphs.
     """
 
     def __init__(self, out_dir, run_id: str, tz_offset_hours: float = 7):
@@ -46,7 +48,7 @@ class SensorLogger:
     def _elapsed_s(self):
         return round(time.time() - self.t0, 4)
 
-    # ---------- callbacks (เรียกจาก ChassisController.subscribe_sensors) ----------
+    # ---------- callbacks (called by ChassisController.subscribe_sensors) ----------
     def cb_attitude(self, attitude_info):
         # SDK callback: (yaw, pitch, roll)
         yaw, pitch, roll = attitude_info
@@ -61,7 +63,7 @@ class SensorLogger:
             })
 
     def cb_position(self, position_info):
-        # SDK callback: (x, y, z) -- x/y = meter, z = degree
+        # SDK callback: (x, y, z) -- x/y in meters, z in degrees
         x, y, z = position_info
 
         with self.lock:
@@ -127,7 +129,7 @@ class SensorLogger:
         return path
 
     def save_all(self):
-        """Save ทุก sensor เป็น CSV แล้วคืน dict ของ path (ใช้ต่อใน plot_all)"""
+        """Save all sensor data as CSV files and return a dictionary of paths for plot_all()."""
         return {
             "attitude": self._save_csv("attitude"),
             "position": self._save_csv("position"),
@@ -164,7 +166,7 @@ class SensorLogger:
         print(f"[PLOT] {png_path}")
 
     def plot_all(self, csv_paths: dict):
-        """รับ dict path จาก save_all() แล้ว plot กราฟทุก sensor"""
+        """Receive the path dictionary from save_all() and plot graphs for all sensors."""
         self._plot_csv(
             csv_paths.get("attitude"),
             "RoboMaster Attitude vs Time UTC+7",
